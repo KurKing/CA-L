@@ -19,14 +19,23 @@ MODEL small		; Директива - тип моделі пам’яті
 STACK 2048		; Директива - розмір стеку 
 
 DATASEG
-array_stack dw 2E2Eh, 2098h, 6847h, 7230h, 5182h, 1964h, 7350h, 1628h, 9823h, 5927h, 2343h, 7515h, 5238h, 8272h, 6576h, 2619h
-            dw 9520h, 6608h, 5535h, 9745h, 8314h, 1683h, 2065h, 3718h, 3198h, 5267h, 1546h, 2273h, 9317h, 2181h, 7466h, 1940h
-            dw 7417h, 2385h, 2240h, 8346h, 9246h, 9573h, 5050h, 1549h, 4402h, 7854h, 8126h, 9060h, 3476h, 7497h, 3703h, 1857h
-            dw 8794h, 8017h, 3227h, 1033h, 7980h, 8658h, 6475h, 2653h, 4970h, 3343h, 3788h, 4600h, 4953h, 5156h, 7128h, 9539h
-            dw 4889h, 8734h, 8685h, 3104h, 5514h, 9721h, 5958h, 4611h, 7759h, 1725h, 6059h, 7499h, 9681h, 4573h, 6929h, 1387h
-            dw 2772h, 5484h, 7392h, 8250h, 5503h, 6080h, 1249h, 3413h, 3167h, 9250h, 7496h, 7533h, 2101h, 4007h, 6810h, 4531h
-            dw 4979h, 9050h, 8589h, 6962h, 5374h, 3451h, 2971h, 6612h, 8002h, 4074h, 2634h, 3694h, 7979h, 7571h, 7333h, 9852h
-            dw 9847h, 3270h, 2426h, 6722h, 2697h, 9765h, 2203h, 3222h, 6819h, 5024h, 5846h, 3619h, 9626h, 2638h, 4465h, 2E2Eh
+array_stack db 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9
+            db 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7
+            db 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8
+            db 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2
+            db 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9
+            db 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7
+            db 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8
+            db 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2
+            db 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9
+            db 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7
+            db 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8
+            db 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2
+            db 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9
+            db 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7
+            db 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8
+            db 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2
+LEN DW 256
 
 first_birthdate db "08102002"            
 second_birthdate db "09102002"
@@ -38,8 +47,12 @@ Start:
     mov ds, ax
     mov es, ax
 
+    mov cx, [LEN]   ;Cx is counter for OUTERLOOP CX=5    
+    dec cx          ; CX = 4 
+    call sort
+
 ; set params for copy_array
-    mov cx, 128                 ; repeats amount
+    mov cx, 256                 ; repeats amount
     call copy_arr
     
 ; set params for set_bdates
@@ -82,6 +95,7 @@ Start:
     mov bp, 01C1h
     call set_bdatesd
 
+
 ; application finishing
     mov ah, 4ch
     int 21h
@@ -94,7 +108,7 @@ Start:
         xor si, si                       ; set si to zero
         array_coping_loop:
             mov bx, [ds:si]              ; get number from array_array stack & set it to bx as a temp variable
-            mov [ds:[si+260h]], bx       ; set value from bx to ds with offset 
+            mov [ds:[si+270h]], bx       ; set value from bx to ds with offset 
             add si, 2                    ; si value + 2
             loop array_coping_loop
 
@@ -166,6 +180,32 @@ Start:
             inc si                                ; increment si
             inc bp                                ; increment bp
             loop dbirthdate_label
+
+        ret
+    ENDP
+
+    PROC sort
+        nextscan:                ; do {    // outer loop
+            mov bx,cx
+            mov si,0 
+
+        nextcomp:
+
+            mov al,[array_stack+si]
+            mov dl,[array_stack+si+1]
+            cmp al,dl
+
+            jnc noswap 
+
+            mov [array_stack+si], dl
+            mov [array_stack+si+1], al
+
+        noswap: 
+            inc si
+            dec bx
+            jnz nextcomp
+
+            loop nextscan
 
         ret
     ENDP
