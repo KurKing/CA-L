@@ -81,15 +81,14 @@
             call b10menu ;вивід меню
             mov row,toprow+1 ;вибір верхнього пункту меню 
             ; у якості початкового значення
-            mov attrib,16h ;переключення зображення в інв..
+            mov attrib,16h
             call d10disply
             call c10input
 
-        ; call d10disply ;відображення call c10input ;вибір з меню
         jmp a20 ;
         a10main endp
 
-        ; Вивід рамки, меню і запрошення…
+        ; Вивід інтерфейсу користувача
         b10menu proc near
             pusha
             mov ax,1301h
@@ -143,6 +142,7 @@
             je ecs_pressed ; вихід
         jmp main_cycle ;жодна не натиснена, повторення
 
+        ; натиснено стрілка до низу
         down_arrow_pressed:
             mov attrib,25h
             call d10disply
@@ -151,7 +151,7 @@
             jbe c50
             mov row,toprow+1
             jmp c50
-
+        ; натиснено стрілка до гори
         up_arrow_pressed:
             mov attrib,25h
             call d10disply
@@ -159,15 +159,15 @@
             cmp row,toprow+1
             jae c50
             mov row,botrow-1
-
+        ; заливка виділеного поля
         c50:
             mov attrib,17h
             call d10disply
             jmp main_cycle
-
+        ; натиснено esc
         ecs_pressed:
             jmp exit
-
+        ; натиснено enter
         enter_pressed:
             popa 
             lea si,row
@@ -175,7 +175,7 @@
             xor ah,ah
             mov bx, 8
             sub ax, bx
-
+            ; вибір потрібної дії в залежності від натисненої кнопки
             cmp ax, 01h
             je  print_team_number
             cmp ax, 02h
@@ -193,16 +193,16 @@
 
         print_team_number:
             mov dx, offset empty_message
-            call display_foo
+            call display_information
             mov dx, offset team
-            call display_foo
+            call display_information
             call pause1
             call screenClear
             jmp main_cycle
 
         print_team:
             mov dx, offset empty_message
-            call display_foo
+            call display_information
             push ds
             mov ah, 25h
             mov al, 58h
@@ -216,46 +216,45 @@
 
         count:
             mov dx, offset empty_message
-            call display_foo
+            call display_information
             mov dx, offset message_3
-            call display_foo
+            call display_information
             call math
             jmp main_cycle
 
         beep:
             mov dx, offset empty_message 
-            call display_foo
+            call display_information
             mov dx, offset message_2 
-            call display_foo
+            call display_information
             call sound; виклик функції звуку
             jmp main_cycle
 
         min:
             mov dx, offset empty_message 
-            call display_foo
+            call display_information
             mov dx, offset message_4
-            call display_foo
+            call display_information
             call sort 
             mov ax, [ds:0000h]
             call output 
             jmp main_cycle
-        ;---------------------------------------------------------
         ; стандартний вихід з програми
         exit:
             mov dx, offset empty_message 
-            call display_foo
+            call display_information
             mov dx, offset message_1 
-            call display_foo
+            call display_information
             mov ax,4c00h
             int 21h
-        ;-------------sub-2 display_foo---------------------
-        display_foo proc
+        ; вивід повідомлення
+        display_information proc
             mov ah,9
             int 21h
             xor dx, dx
             ret
-        display_foo  endp
-        ;---------------------------------------------------------
+        display_information  endp
+        ; вивід числового значення
         output proc 
             mov [es:0475h],' '
             mov [es:0474h],' '
@@ -298,7 +297,7 @@
             ret 
         output endp
 
-        ;Процедура виклику звукового сигналу
+        ; процедура виклику звукового сигналу
         sound proc
             lab8: 
                                 ;встановлення частоти 440 гц
@@ -325,7 +324,7 @@
             ret
         sound endp
         
-        ;Процедура розрахунку математичного виразу
+        ; процедура розрахунку математичного виразу
         math proc
             mov ax, -7
             mov bx, 3
@@ -341,7 +340,7 @@
             ret
         math endp
 
-        ;Процедура сортування масиву
+        ; процедура сортування масиву
         sort proc
             lea si, array
             mov cx, len    
@@ -384,7 +383,7 @@
             ret
         sort  endp
 
-        ;Забарвлення виділеного рядка
+        ; забарвлення виділеного рядка
         d10disply proc near
             pusha 
             movzx ax,row 
@@ -403,7 +402,7 @@
             ret
         d10disply endp
 
-        ;Очищення екрану
+        ; очищення екрану
         q10clear proc near
             pusha 
             mov ax,0600h
@@ -415,7 +414,7 @@
             ret
         q10clear endp
 
-        ;Вивід імен цчасників команди
+        ; вивід імен учасників команди
         print proc far
             mov ah,09h
             mov dx, offset member1
@@ -429,7 +428,7 @@
             iret
         print endp
 
-        ;Процедура очищення екрану
+        ; процедура очищення екрану
         screenclear proc
             call q10clear ; очистка екрану
             call b10menu ;вивід меню
@@ -438,7 +437,7 @@
             ret
         screenclear endp
 
-        ;Пауза 1 секундy
+        ; пауза 1 секундy
         pause1 proc
             mov cx, 40 
             classic_loop:
