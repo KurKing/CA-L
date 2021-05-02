@@ -190,7 +190,7 @@
             je exit
             ret
         c10input endp
-
+        ; вивід номеру команди
         print_team_number:
             mov dx, offset empty_message
             call display_information
@@ -199,7 +199,7 @@
             call pause1
             call screenClear
             jmp main_cycle
-
+        ; вивід учасників команди
         print_team:
             mov dx, offset empty_message
             call display_information
@@ -213,7 +213,7 @@
             pop ds
             int 58h
             jmp main_cycle
-
+        ; обрахунок виразу
         count:
             mov dx, offset empty_message
             call display_information
@@ -221,7 +221,7 @@
             call display_information
             call math
             jmp main_cycle
-
+        ; звуковий сигнал
         beep:
             mov dx, offset empty_message 
             call display_information
@@ -229,7 +229,7 @@
             call display_information
             call sound; виклик функції звуку
             jmp main_cycle
-
+        ; пошук найменшого значення
         min:
             mov dx, offset empty_message 
             call display_information
@@ -296,7 +296,6 @@
             call screenclear
             ret 
         output endp
-
         ; процедура виклику звукового сигналу
         sound proc
             lab8: 
@@ -313,17 +312,14 @@
             out channel_2,al    ;відправка al
             mov al,ah           ;відправка старшого байту в al
             out channel_2,al    ;відправка старшого байту 
-        
             ;пауза 1 секундy
             call pause1
-
             ; вимкнення звуку 
             in al,port_b        ;отримуємо байт з порту в
             and al,11111100b    ;скидання двох молодших бітів
             out port_b,al       ;пересилка байтів в зворотному напрямку
             ret
         sound endp
-        
         ; процедура розрахунку математичного виразу
         math proc
             mov ax, -7
@@ -339,7 +335,6 @@
             call output
             ret
         math endp
-
         ; процедура сортування масиву
         sort proc
             lea si, array
@@ -382,7 +377,6 @@
 
             ret
         sort  endp
-
         ; забарвлення виділеного рядка
         d10disply proc near
             pusha 
@@ -401,7 +395,6 @@
             popa 
             ret
         d10disply endp
-
         ; очищення екрану
         q10clear proc near
             pusha 
@@ -413,7 +406,6 @@
             popa 
             ret
         q10clear endp
-
         ; вивід імен учасників команди
         print proc far
             mov ah,09h
@@ -427,7 +419,6 @@
             call screenclear
             iret
         print endp
-
         ; процедура очищення екрану
         screenclear proc
             call q10clear ; очистка екрану
@@ -436,7 +427,6 @@
             call d10disply
             ret
         screenclear endp
-
         ; пауза 1 секундy
         pause1 proc
             mov cx, 40 
@@ -450,5 +440,4 @@
             loop classic_loop
             ret
         pause1 endp
-
     end a10main
