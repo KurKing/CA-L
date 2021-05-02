@@ -6,7 +6,7 @@
 ; Група: ІТ-01
 ;------------------------------------------------------------------------------
 ; Автор: Бардін, Задніпрянець, Куркін
-; Дата: 29/04/2021
+; Дата: 06/05/2021
 ;----------------------------I.ЗАГОЛОВОК ПРОГРАМИ------------------------------
 .model small
 .stack 512
@@ -42,6 +42,7 @@
     attrib db ?         ;атрибути екрану
     row db 00           ;рядок екрану
 
+    ;рядки головного меню
     shadow db 20 dup(0dbh);
     menu db 0c9h, 17 dup(0cdh), 0bbh
     db 0bah, '   Team number   ',0bah
@@ -51,7 +52,7 @@
     db 0bah, '    Min value    ',0bah
     db 0bah, '      Exit       ',0bah
     db 0c8h, 17 dup(0cdh), 0bch
-
+    ;допоміжні повідомлення
     prompt db 'To select an item use arrows'
     db ' and press enter'
     db 13, 10, 'Press esc to exit                         '
@@ -61,7 +62,6 @@
     message_3 db "RESULT:                               ", 13, 10, '$'   
     message_4 db "MIN VALUE:", 13, 10, '$'
     empty_message db " ", 13, 10, '$'
-
     ;рядки символів для виводу на екран
     team db "Team #1",10,13,'$'
     member1 db "Bardin Vlad",10,13,'$'

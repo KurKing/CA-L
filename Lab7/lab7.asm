@@ -88,25 +88,25 @@ codeseg
         je exit
         jmp main_cycle
 
-    ; Функція для розрахунку
+    ; Розрахунок виразу
     count:
         mov dx, offset message_5
         call display_string
         call math
         jmp main_cycle
-    ; Функція для звукового сигналу
+    ; Подача звукового сигналу
     beep:
         mov dx, offset message_5 
         call display_string
         call sound
         jmp main_cycle
-    ; Функція для пошуку мінімального значення в масиві
+    ; Пошуку мінімального значення в масиві
     find_min:
         mov dx, offset message_5 
         call display_string
         call sort 
         jmp main_cycle
-    ; Функція для виходу з програми
+    ; Вихід з програми
     exit:
         mov dx, offset message_4 
         call display_string
@@ -139,12 +139,12 @@ codeseg
         xor dx, dx
         ret
     endp display_string 
-    ;Процедура виводу рядку з dx
+    ;Процедура для відтворення звукового сигналу
     proc sound
         lab7:
         int 16h             ; зберігає отримане значення з клавіатури в змінній 
         mov [symbol], al
-        cmp [symbol], 'e'    ; перевірка на відповідність і встановлення прапору ознаки 0
+        cmp [symbol], 'e'   ; перевірка на відповідність і встановлення прапору ознаки 0
         jz exit             ; перехід на exit: у випадку відповідності 
                             ;встановлення частоти 440 гц
                             ;дозвіл каналу 2 встановлення порту в мікросхеми 8255
@@ -171,7 +171,7 @@ codeseg
             mov cx,bx 
         loop classic_loop
 
-                            ; вимкнення звуку 
+                            ;вимкнення звуку 
         in al,port_b        ;отримуємо байт з порту в
         and al,11111100b    ;скидання двох молодших бітів
         out port_b,al       ;пересилка байтів в зворотному напрямку
