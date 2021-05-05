@@ -232,7 +232,7 @@ codeseg
         int 21h
 
         ;пауза для відображення виведеного повідомлення
-        mov cx, 50
+        mov cx, 100
         classic_loop2:
             mov bx, cx
             mov  ah,86h

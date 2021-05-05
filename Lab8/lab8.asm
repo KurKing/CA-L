@@ -114,7 +114,7 @@
             add bp,19
             inc dh
             cmp dh,botrow+1
-        jne b30
+            jne b30
             mov ax,1301h
             movzx bx,attrib
             lea bp,prompt
@@ -292,7 +292,6 @@
                 int 21h
                 
             call pause1
-
             call screenclear
             ret 
         output endp
@@ -312,7 +311,7 @@
             out channel_2,al    ;відправка al
             mov al,ah           ;відправка старшого байту в al
             out channel_2,al    ;відправка старшого байту 
-            ;пауза 1 секундy
+            ; пауза 1 секундy
             call pause1
             ; вимкнення звуку 
             in al,port_b        ;отримуємо байт з порту в
@@ -423,7 +422,7 @@
         screenclear proc
             call q10clear ; очистка екрану
             call b10menu ;вивід меню
-            mov attrib,16h ;переключення зображення в інв..
+            mov attrib,16h
             call d10disply
             ret
         screenclear endp
